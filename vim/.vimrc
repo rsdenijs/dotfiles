@@ -23,11 +23,21 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'L9'
 " Avoid a name conflict with L9
 Plugin 'bfredl/nvim-ipy'
 " Plugin 'ivanov/vim-ipython'
 Plugin 'michaeljsmith/vim-indent-object'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'tomasr/molokai'
+Plugin 'chriskempson/base16-vim'
+Plugin 'alfredodeza/pytest.vim'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'nvie/vim-flake8'
+Plugin 'tell-k/vim-autopep8'
+" Plugin 'ervandew/supertab' 
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -53,7 +63,6 @@ filetype indent on
 filetype plugin indent on     " enable loading indent file for filetype
 set number                    " Display line numbers
 set numberwidth=1             " using only 1 column (and 1 space) while possible
-set background=dark           " We are using dark background in vim
 set title                     " show title in console title bar
 set wildmenu                  " Menu completion in command mode on <Tab>
 set wildmode=longest,list,full             " <Tab> cycles between all matching choices.
@@ -154,12 +163,30 @@ map <leader>p "+p
 :nnoremap <A-k> <C-w>k
 :nnoremap <A-l> <C-w>l
 " "==========================================================
-" Plugin configuration
+" [Plugins] configuration
 " ==========================================================
+
 " Open NerdTree
 map <leader>n :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', 'tags']
+" Nerdcommenter
+" Sane shortcuts for toggling comments
+map <C-_> <plug>NERDCommenterToggle<CR>
+imap <C-_> <Esc><plug>NERDCommenterToggle<CR>i
+" Multiple cursors
+let g:multi_cursor_exit_from_insert_mode=0
+
+" Flake8
+autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
+" Autopep8
+autocmd FileType python map <buffer> <leader>8 :call Autopep8()<CR>
+" Pytest
+nmap <silent><Leader>tf <Esc>:Pytest file<CR>
+nmap <silent><Leader>tc <Esc>:Pytest class<CR>
+nmap <silent><Leader>tm <Esc>:Pytest method<CR>
+nmap <silent><Leader>t <Esc>:Pytest error<CR>
+nmap <silent><Leader>tt <Esc>:Pytest <Tab>
 
 
 " show status when usinv nvim-ipy
@@ -194,3 +221,10 @@ endif
 
 set colorcolumn=79
 
+" Only if terminal does not support full colors or set to solarized scheme
+" let g:solarized_termcolors=256 "Solarized
+let base16colorspace=256  " Base 16 Access colors present in 256 colorspace
+let g:rehash256 = 1 " Molokai
+
+set background=dark
+colorscheme base16-default
