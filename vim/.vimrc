@@ -24,6 +24,7 @@ Plugin 'kien/ctrlp.vim'
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-surround'
 Plugin 'L9'
 " Avoid a name conflict with L9
 Plugin 'bfredl/nvim-ipy'
@@ -37,6 +38,8 @@ Plugin 'davidhalter/jedi-vim'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'nvie/vim-flake8'
 Plugin 'tell-k/vim-autopep8'
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
+Plugin 'aliev/btags.vim'
 " Plugin 'ervandew/supertab' 
 
 " All of your Plugins must be added before the following line
@@ -128,11 +131,16 @@ set noautowrite             " Never write a file unless I request it.
 """ Enable the mouse and scolling
 set mouse=a
 
+
+""" Tags
+set tags=~/mytags
 " "==========================================================
-" Shortcuts
+" [Shortcuts]
 " ==========================================================
 let mapleader=","             " change the leader to be a comma vs slash
 
+" change current dirctory to this file
+nnoremap <leader>cd :lcd %:p:h <CR>:exe ":echo 'current dir modified'"<CR>
 " Seriously, guys. It's not like :W is bound to anything anyway.
 command! W :w
 " sudo write this
@@ -150,8 +158,22 @@ cmap w!! w !sudo tee % >/dev/null
 autocmd InsertEnter * set cursorline
 autocmd InsertEnter * highlight CursorLine guifg=white guibg=DarkBlue
 autocmd InsertLeave * set nocursorline
-" Paste from clipboard
-map <leader>p "+p
+"sane copypaste from clipboard
+vnoremap <leader>y "+y
+nnoremap <leader>p a<C-r><C-o>+
+" My commands
+command! RemoveTrailingSpaces %s/\s\+$//
+
+" When double click a word, highlight matches( search forward and then backward)
+nnoremap <2-LeftMouse> *#
+vnoremap <space> *#
+
+" Select all
+map <C-a> <esc>ggVG<CR>
+
+" Use Esc to remove search highlights. Second mapping fixes the use of arrowkeys
+nnoremap <silent><esc> :noh<CR>
+nnoremap <esc>^[ <esc>^[
 
 " Terminal mode in nvim easier window switching
 :tnoremap <A-h> <C-\><C-n><C-w>h
@@ -167,7 +189,7 @@ map <leader>p "+p
 " ==========================================================
 
 " Open NerdTree
-map <leader>n :NERDTreeToggle<CR>
+map <leader>e :NERDTreeFocus<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', 'tags']
 " Nerdcommenter
@@ -181,6 +203,8 @@ let g:multi_cursor_exit_from_insert_mode=0
 autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
 " Autopep8
 autocmd FileType python map <buffer> <leader>8 :call Autopep8()<CR>
+
+
 " Pytest
 nmap <silent><Leader>tf <Esc>:Pytest file<CR>
 nmap <silent><Leader>tc <Esc>:Pytest class<CR>
@@ -192,6 +216,10 @@ nmap <silent><Leader>tt <Esc>:Pytest <Tab>
 " show status when usinv nvim-ipy
 set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)%(\ -\ %{g:ipy_status}%)\ -\ 
 
+map <silent> <C-J> <Plug>(IPy-Run) 
+imap <silent> <C-J> <Esc><Plug>(IPy-Run) 
+map <F11> <Plug>(IPy-Interrupt)
+map <F12> <Plug>(IPy-Terminate)
 " "==========================================================
 " Python configuration 
 " ==========================================================
@@ -220,11 +248,65 @@ if filereadable($VIRTUAL_ENV . '/.vimrc')
 endif
 
 set colorcolumn=79
-
+" set t_Co=16
 " Only if terminal does not support full colors or set to solarized scheme
-" let g:solarized_termcolors=256 "Solarized
-let base16colorspace=256  " Base 16 Access colors present in 256 colorspace
+" let g:solarized_termcolors=16 "Solarized
 let g:rehash256 = 1 " Molokai
-
+" Base 16 Access colors present in 256 colorspace
+let base16colorspace=256
 set background=dark
-colorscheme base16-default
+colorscheme base16-railscasts
+
+" ----------------------------------------------------------------------------
+" BTags
+" ----------------------------------------------------------------------------
+function! s:align_lists(lists)
+  let maxes = {}
+  for list in a:lists
+    let i = 0
+    while i < len(list)
+      let maxes[i] = max([get(maxes, i, 0), len(list[i])])
+      let i += 1
+    endwhile
+  endfor
+  for list in a:lists
+    call map(list, "printf('%-'.maxes[v:key].'s', v:val)")
+  endfor
+  return a:lists
+endfunction
+
+function! s:btags_source()
+  let lines = map(split(system(printf(
+    \ 'ctags -f - --sort=no --fields=nKs --excmd=pattern --language-force=%s %s',
+    \ &filetype, expand('%:S'))), "\n"), 'split(v:val, "\t")')
+  if v:shell_error
+    throw 'failed to extract tags'
+  endif
+  return map(s:align_lists(lines), 'join(v:val, "\t")')
+endfunction
+
+function! s:btags_sink(line)
+  let lines = split(a:line, "\t")
+  for line in lines
+      let arr = split(line, ":")
+      if arr[0] == "line"
+          exec arr[-1]
+      endif
+  endfor
+  sil! norm! zvzz
+endfunction
+
+function! s:btags()
+  try
+    call fzf#run({'source':  s:btags_source(),
+                 \'down':    '50%',
+                 \'options': '+m -d "\t" --with-nth 4,1',
+                 \'sink':    function('s:btags_sink')})
+  catch
+    echohl WarningMsg
+    echom v:exception
+    echohl None
+  endtry
+endfunction
+
+command! BTags call s:btags()
