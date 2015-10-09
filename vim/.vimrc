@@ -2,7 +2,7 @@
 " ==========================================================
 " VUNDLE
 " ==========================================================
-"
+    "
 set nocompatible              " be iMproved, required
 set shell=bash
 filetype off                  " required for Vundle
@@ -31,6 +31,7 @@ Plugin 'bfredl/nvim-ipy'
 " Plugin 'ivanov/vim-ipython'
 Plugin 'michaeljsmith/vim-indent-object'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'chriskempson/tomorrow-theme'
 Plugin 'tomasr/molokai'
 Plugin 'chriskempson/base16-vim'
 Plugin 'alfredodeza/pytest.vim'
@@ -39,8 +40,9 @@ Plugin 'terryma/vim-multiple-cursors'
 Plugin 'nvie/vim-flake8'
 Plugin 'tell-k/vim-autopep8'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-"Plugin 'aliev/btags.vim'
-" Plugin 'ervandew/supertab' 
+Plugin 'bling/vim-airline' "Status bar with me information
+"match all occurences in incsearch
+Plugin 'haya14busa/incsearch.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -187,6 +189,12 @@ nnoremap <esc>^[ <esc>^[
 " "==========================================================
 " [Plugins] configuration
 " ==========================================================
+" airlin
+let g:airline#extensions#tabline#enabled = 1
+" Fancy incsearch
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
 
 " Open NerdTree
 map <leader>e :NERDTreeFocus<CR>
@@ -204,6 +212,8 @@ autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
 " Autopep8
 autocmd FileType python map <buffer> <leader>8 :call Autopep8()<CR>
 
+let g:flake8_max_line_length=120
+let g:flake8_ignore="E231,E501,W293,W391,E302"
 
 " Pytest
 nmap <silent><Leader>tf <Esc>:Pytest file<CR>
@@ -211,6 +221,7 @@ nmap <silent><Leader>tc <Esc>:Pytest class<CR>
 nmap <silent><Leader>tm <Esc>:Pytest method<CR>
 nmap <silent><Leader>t <Esc>:Pytest error<CR>
 nmap <silent><Leader>tt <Esc>:Pytest <Tab>
+nmap <silent><Leader>ts <Esc>:Pytest session 
 
 
 " show status when usinv nvim-ipy
@@ -251,12 +262,13 @@ set colorcolumn=79
 " set t_Co=16
 " Only if terminal does not support full colors or set to solarized scheme
 " let g:solarized_termcolors=16 "Solarized
-let g:rehash256 = 1 " Molokai
+" let g:rehash256 = 1 " Molokai
 " Base 16 Access colors present in 256 colorspace
 let base16colorspace=256
 set background=dark
 colorscheme base16-railscasts
 
+<<<<<<< HEAD
 "" ----------------------------------------------------------------------------
 "" BTags
 "" ----------------------------------------------------------------------------
@@ -310,3 +322,4 @@ colorscheme base16-railscasts
 "endfunction
 
 "command! BTags call s:btags()
+=======
