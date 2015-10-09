@@ -39,7 +39,6 @@ Plugin 'terryma/vim-multiple-cursors'
 Plugin 'nvie/vim-flake8'
 Plugin 'tell-k/vim-autopep8'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-:so /home/roderick/ctagstest/amazingtags.vim
 "Plugin 'aliev/btags.vim'
 " Plugin 'ervandew/supertab' 
 
@@ -52,7 +51,7 @@ filetype plugin indent on    " required
 " Brief help
 " :PluginList       - lists configured plugins
 " :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginSearch foo - searches for foo; append `!` to refresh local cach/amazi
 " :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
 "
 " see :h vundle for more details or wiki for FAQ
