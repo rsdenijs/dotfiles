@@ -1,4 +1,3 @@
-
 " ==========================================================
 " VUNDLE
 " ==========================================================
@@ -15,7 +14,6 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
@@ -36,6 +34,7 @@ Plugin 'tomasr/molokai'
 Plugin 'chriskempson/base16-vim'
 Plugin 'alfredodeza/pytest.vim'
 Plugin 'davidhalter/jedi-vim'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'nvie/vim-flake8'
 Plugin 'tell-k/vim-autopep8'
@@ -43,6 +42,7 @@ Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 Plugin 'bling/vim-airline' "Status bar with me information
 "match all occurences in incsearch
 Plugin 'haya14busa/incsearch.vim'
+Plugin 'hdima/python-syntax'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -189,6 +189,30 @@ nnoremap <esc>^[ <esc>^[
 " "==========================================================
 " [Plugins] configuration
 " ==========================================================
+"Python syntax plugin
+"let python_highlight_all = 1
+" jedi stuff
+let g:jedi#auto_initialization = 1
+let g:jedi#auto_vim_configuration = 0
+" let g:jedi#use_tabs_not_buffers = 1
+let g:jedi#popup_on_dot = 0 "let YouCompleteme do this
+let g:jedi#popup_select_first = 0
+let g:jedi#show_call_signatures = "1"
+let g:jedi#completions_enabled = 0
+
+"Disable docstring during completion
+autocmd FileType python setlocal completeopt-=preview
+
+let g:jedi#goto_command = "<leader>d"
+let g:jedi#goto_assignments_command = "<leader>g"
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = "<leader>n"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<leader>r"
+
+"Youcompleteme
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " airlin
 let g:airline#extensions#tabline#enabled = 1
 " Fancy incsearch
@@ -208,12 +232,13 @@ imap <C-_> <Esc><plug>NERDCommenterToggle<CR>i
 let g:multi_cursor_exit_from_insert_mode=0
 
 " Flake8
+let g:flake8_show_in_gutter=1
+let g:flake8_show_in_file=1
+
 autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
 " Autopep8
 autocmd FileType python map <buffer> <leader>8 :call Autopep8()<CR>
 
-let g:flake8_max_line_length=120
-let g:flake8_ignore="E231,E501,W293,W391,E302"
 
 " Pytest
 nmap <silent><Leader>tf <Esc>:Pytest file<CR>
@@ -229,6 +254,7 @@ set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)%(\ -\ %{g:ipy_sta
 
 map <silent> <C-J> <Plug>(IPy-Run) 
 imap <silent> <C-J> <Esc><Plug>(IPy-Run) 
+imap <silent> <C-f> <Plug>(IPy-Complete)
 map <F11> <Plug>(IPy-Interrupt)
 map <F12> <Plug>(IPy-Terminate)
 " "==========================================================
@@ -321,4 +347,3 @@ colorscheme base16-railscasts
 "endfunction
 
 "command! BTags call s:btags()
-=======
