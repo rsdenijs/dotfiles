@@ -43,6 +43,7 @@ Plugin 'bling/vim-airline' "Status bar with me information
 "match all occurences in incsearch
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'hdima/python-syntax'
+Plugin 'mhinz/vim-startify'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -72,6 +73,9 @@ set title                     " show title in console title bar
 set wildmenu                  " Menu completion in command mode on <Tab>
 set wildmode=longest,list,full             " <Tab> cycles between all matching choices.
 set hidden
+
+" Find ctags in current dir
+set tags=tags
 
 " don't bell or blink
 set noerrorbells
@@ -134,8 +138,6 @@ set noautowrite             " Never write a file unless I request it.
 set mouse=a
 
 
-""" Tags
-set tags=~/mytags
 " "==========================================================
 " [Shortcuts]
 " ==========================================================
@@ -147,6 +149,10 @@ nnoremap <leader>cd :lcd %:p:h <CR>:exe ":echo 'current dir modified'"<CR>
 command! W :w
 " sudo write this
 cmap W! w !sudo tee % >/dev/null
+
+
+" Easily GREP current word in current file.
+command GREP :execute 'vimgrep '.expand('<cword>').' '.expand('%') | :copen | :cc
 
 " Utils
 " Reload Vimrc
@@ -189,6 +195,9 @@ nnoremap <esc>^[ <esc>^[
 " "==========================================================
 " [Plugins] configuration
 " ==========================================================
+" CtrlP 
+nnoremap <C-P> :CtrlP<CR>
+nnoremap <C-K> :CtrlPTag<CR>
 "Python syntax plugin
 "let python_highlight_all = 1
 " jedi stuff
@@ -285,7 +294,7 @@ if filereadable($VIRTUAL_ENV . '/.vimrc')
 endif
 
 set colorcolumn=79
-" set t_Co=16
+set t_Co=256 " Only required for vim
 " Only if terminal does not support full colors or set to solarized scheme
 " let g:solarized_termcolors=16 "Solarized
 " let g:rehash256 = 1 " Molokai
