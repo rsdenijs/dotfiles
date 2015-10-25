@@ -162,7 +162,9 @@ map <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimr
 " " for when we forget to use sudo to open/edit a file
 cmap w!! w !sudo tee % >/dev/null
 
-
+" Spelling suggestions as a dropdown 
+nnoremap ,s a<C-X><C-S>
+"
 "" Cursorline in insert
 autocmd InsertEnter * set cursorline
 autocmd InsertEnter * highlight CursorLine guifg=white guibg=DarkBlue
