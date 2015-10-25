@@ -19,6 +19,7 @@ Plugin 'VundleVim/Vundle.vim'
 " plugin on GitHub repo
 Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
+Plugin 'scrooloose/syntastic'
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -36,7 +37,7 @@ Plugin 'alfredodeza/pytest.vim'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'nvie/vim-flake8'
+"Plugin 'nvie/vim-flake8'
 Plugin 'tell-k/vim-autopep8'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 Plugin 'bling/vim-airline' "Status bar with me information
@@ -59,7 +60,8 @@ filetype plugin indent on    " required
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_log_level = 'debug'
 " ==========================================================
 " Basic Settings
 " ==========================================================
@@ -99,9 +101,8 @@ set softtabstop=4           " <BS> over an autoindent deletes both spaces.
 set expandtab               " Use spaces, not tabs, for autoindent/tab key.
 set shiftround              " rounds indent to a multiple of shiftwidth
 set matchpairs+=<:>         " show matching <> (html mainly) as well
+set foldmethod=indent       " allow us to fold on indents
 set foldlevel=99            " don't fold by default
-set foldmethod=marker
-set foldmarker=#<,#>
 """" Reading/Writing
 set noautowrite             " Never write a file unless I request it.
 set noautowriteall          " NEVER.
@@ -151,6 +152,13 @@ command! W :w
 " sudo write this
 cmap W! w !sudo tee % >/dev/null
 
+" Shortcut to rapidly toggle `set list`
+nmap <leader>hi :set list!<CR>
+
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬,space:␣
+
+set nolist
 
 " Easily GREP current word in current file.
 command GREP :execute 'vimgrep '.expand('<cword>').' '.expand('%') | :copen | :cc
@@ -162,9 +170,7 @@ map <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimr
 " " for when we forget to use sudo to open/edit a file
 cmap w!! w !sudo tee % >/dev/null
 
-" Spelling suggestions as a dropdown 
-nnoremap ,s a<C-X><C-S>
-"
+
 "" Cursorline in insert
 autocmd InsertEnter * set cursorline
 autocmd InsertEnter * highlight CursorLine guifg=white guibg=DarkBlue
@@ -175,6 +181,13 @@ nnoremap <leader>p a<C-r><C-o>+
 " My commands
 command! RemoveTrailingSpaces %s/\s\+$//
 
+" easy add quotes
+nnoremap <leader>'  ciw'<c-r><c-o>"'<esc> 
+nnoremap <leader>"  ciw"<c-r><c-o>""<esc> 
+vnoremap <leader>'  c'<c-r><c-o>"'<esc> 
+vnoremap <leader>"  c"<c-r><c-o>""<esc> 
+" close buffer but now window shortcut
+nnoremap <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
 " When double click a word, highlight matches( search forward and then backward)
 nnoremap <2-LeftMouse> *#
 vnoremap <space> *#
@@ -186,6 +199,15 @@ map <C-a> <esc>ggVG<CR>
 nnoremap <silent><esc> :noh<CR>
 nnoremap <esc>^[ <esc>^[
 
+" Difference with the disk version of the file
+function! s:DiffWithSaved()
+let filetype=&ft
+diffthis
+vnew | r # | normal! 1Gdd
+diffthis
+exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
 " Terminal mode in nvim easier window switching
 :tnoremap <A-h> <C-\><C-n><C-w>h
 :tnoremap <A-j> <C-\><C-n><C-w>j
@@ -234,6 +256,7 @@ map g/ <Plug>(incsearch-stay)
 
 " Open NerdTree
 map <leader>e :NERDTreeFocus<CR>
+map <leader>ec :NERDTreeClose<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', 'tags']
 " Nerdcommenter
@@ -243,11 +266,23 @@ imap <C-_> <Esc><plug>NERDCommenterToggle<CR>i
 " Multiple cursors
 let g:multi_cursor_exit_from_insert_mode=0
 
-" Flake8
-let g:flake8_show_in_gutter=1
-let g:flake8_show_in_file=1
+ "Flake8
+"let g:flake8_show_in_gutter=1
+"let g:flake8_show_in_file=1
+"
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
-autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+autocmd FileType python map <buffer> <leader>l :call SyntasticCheck()<CR>
+
+"autocmd FileType python map <buffer> <leader>l :call Flake8()<CR>
 " Autopep8
 autocmd FileType python map <buffer> <leader>8 :call Autopep8()<CR>
 
