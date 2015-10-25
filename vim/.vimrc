@@ -99,8 +99,9 @@ set softtabstop=4           " <BS> over an autoindent deletes both spaces.
 set expandtab               " Use spaces, not tabs, for autoindent/tab key.
 set shiftround              " rounds indent to a multiple of shiftwidth
 set matchpairs+=<:>         " show matching <> (html mainly) as well
-set foldmethod=indent       " allow us to fold on indents
 set foldlevel=99            " don't fold by default
+set foldmethod=marker
+set foldmarker=#<,#>
 """" Reading/Writing
 set noautowrite             " Never write a file unless I request it.
 set noautowriteall          " NEVER.
@@ -261,7 +262,7 @@ nmap <silent><Leader>ts <Esc>:Pytest session
 " show status when usinv nvim-ipy
 set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)%(\ -\ %{g:ipy_status}%)\ -\ 
 
-map <silent> <C-J> <Plug>(IPy-Run) 
+nnoremap <silent> <C-J> [zV]z<Plug>(IPy-Run) 
 imap <silent> <C-J> <Esc><Plug>(IPy-Run) 
 imap <silent> <C-f> <Plug>(IPy-Complete)
 map <F11> <Plug>(IPy-Interrupt)
