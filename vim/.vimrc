@@ -25,11 +25,12 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'tpope/vim-surround'
 Plugin 'L9'
+Plugin 'https://github.com/freeo/vim-kalisi'
 " Avoid a name conflict with L9
 Plugin 'bfredl/nvim-ipy'
 " Plugin 'ivanov/vim-ipython'
 Plugin 'michaeljsmith/vim-indent-object'
-Plugin 'altercation/vim-colors-solarized'
+" Plugin 'altercation/vim-colors-solarized'
 Plugin 'chriskempson/tomorrow-theme'
 Plugin 'tomasr/molokai'
 Plugin 'chriskempson/base16-vim'
@@ -337,9 +338,9 @@ set t_Co=256 " Only required for vim
 " let g:solarized_termcolors=16 "Solarized
 " let g:rehash256 = 1 " Molokai
 " Base 16 Access colors present in 256 colorspace
-let base16colorspace=256
+" let base16colorspace=256
+colorscheme kalisi
 set background=dark
-colorscheme base16-railscasts
 
 "" ----------------------------------------------------------------------------
 "" BTags
