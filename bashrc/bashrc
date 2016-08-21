@@ -113,6 +113,10 @@ if ! shopt -oq posix; then
   fi
 fi
 
+
+#activate ssh-agent to allow ssh-forwarding
+eval $(ssh-agent)
+
 # added by Anaconda2 4.1.1 installer
 export PATH="/home/vagrant/anaconda2/bin:$PATH"
 export PATH="/home/vagrant/anaconda2/:$PATH"
